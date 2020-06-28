@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "DependencieResolver": {
+      "commandName": "Project",
+      "commandLineArgs": "D:\\Path\\To\\Dir"
+    }
+  }
+}
