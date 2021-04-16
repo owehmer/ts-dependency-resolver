@@ -7,20 +7,20 @@ using System.Text.RegularExpressions;
 
 namespace DependencieResolver
 {
-   static class DateiHelper
+   static class FileHelper
    {
-      public static Dictionary<string, IList<string>> DepsAufDatei = new Dictionary<string, IList<string>>();
+      public static Dictionary<string, IList<string>> DepsToFile = new Dictionary<string, IList<string>>();
 
-      public static string LiesGanzeImportZeile(string aktuelleZeile, StreamReader sr)
+      public static string ReadFullImportLine(string aktuelleZeile, StreamReader sr)
       {
-         var istEinzeiligerImport = DateiHelper.IstImportZeile(aktuelleZeile) && DateiHelper.IstImportZeileEnde(aktuelleZeile) || IstZeileUnspezifischerImport(aktuelleZeile);
+         var istEinzeiligerImport = FileHelper.IsImportLine(aktuelleZeile) && FileHelper.IstImportZeileEnde(aktuelleZeile) || IstZeileUnspezifischerImport(aktuelleZeile);
          if (istEinzeiligerImport)
          {
             return aktuelleZeile;
          }
 
          var zusammengesetzteZeile = new StringBuilder();
-         while (aktuelleZeile != null && !DateiHelper.IstImportZeileEnde(aktuelleZeile))
+         while (aktuelleZeile != null && !FileHelper.IstImportZeileEnde(aktuelleZeile))
          {
             zusammengesetzteZeile.Append(aktuelleZeile);
             try
@@ -37,7 +37,7 @@ namespace DependencieResolver
          return zusammengesetzteZeile.ToString();
       }
 
-      public static bool IstImportZeile(string zeile)
+      public static bool IsImportLine(string zeile)
       {
          return zeile?.Trim().StartsWith("import ") ?? false;
       }
@@ -55,7 +55,7 @@ namespace DependencieResolver
          return importRegel.IsMatch(zeile);
       }
 
-      public static string LiesImportZielAus(string zeile)
+      public static string ReadImportDestination(string zeile)
       {
          if (IstZeileUnspezifischerImport(zeile))
          {
@@ -72,7 +72,7 @@ namespace DependencieResolver
          return fromPfad;
       }
 
-      public static string ErsetzeRelativePfade(string zeile, IList<string> orderBisZurDatei)
+      public static string ReplaceRelativePaths(string zeile, IList<string> orderBisZurDatei)
       {
          var zeileEnthaeltRelativePfade = zeile.Contains('.') || zeile.Contains("..");
          if (!zeileEnthaeltRelativePfade)
